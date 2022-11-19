@@ -8,7 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 const BLUR_SIZE = 100;
-const myWorker = new Worker("../dist/worker.js");
+const myWorker = new Worker("./dist/worker.js");
 function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }

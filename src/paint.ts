@@ -7,7 +7,7 @@ type WorkerToBrowserEvent = {
     };
 };
 const BLUR_SIZE = 100;
-const myWorker = new Worker("../dist/worker.js");
+const myWorker = new Worker("./dist/worker.js");
 
 function sleep(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
