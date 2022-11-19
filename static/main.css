@@ -1,0 +1,20 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: rgb(233, 245, 230);
+    color: black;
+}
+
+.main {
+    border: 1px solid black;
+    background-color: white;
+    display: inline-block;
+}
+
+canvas {
+    display: block;
+    cursor: crosshair;
+}
