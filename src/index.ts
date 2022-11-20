@@ -1,8 +1,8 @@
 import { Paint } from "./paint.js";
 const paint = new Paint(
     "canvas1",
-    window.innerWidth - 100,
-    Math.min(window.innerWidth - 200, window.innerHeight - 200),
+    Math.min(800, window.innerWidth - 18),
+    Math.min(800, window.innerWidth - 18, window.innerHeight - 200),
 );
 
 (document.getElementById("img") as HTMLInputElement).addEventListener("change", function (e) {

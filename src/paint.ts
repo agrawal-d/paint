@@ -55,15 +55,27 @@ export class Paint {
 
     // Apply BLUR_SIZE x BLUR_SIZE gaussian blur centered on `x` and `y`
     gaussianBlur = (x: number, y: number) => {
+        this.locked = true;
         const input = this.ctx.getImageData(x - BLUR_SIZE / 2, y - BLUR_SIZE / 2, BLUR_SIZE, BLUR_SIZE).data;
         myWorker.postMessage({ x: x - BLUR_SIZE / 2, y: y - BLUR_SIZE / 2, input, imgId: this.imgId });
     };
 
-    mouseListener = async (e: MouseEvent) => {
-        if (this.locked || !this.clicked) {
+    mouseListener = async (e: MouseEvent | TouchEvent) => {
+        if (this.locked) {
             return;
         }
-        this.locked = true;
+
+        if ("touches" in e) {
+            const touch = e.touches[0];
+            const canvasPos = this.canvas.getBoundingClientRect();
+            this.gaussianBlur(touch.clientX - canvasPos.left, touch.clientY - canvasPos.top);
+            return;
+        }
+
+        if (!this.clicked) {
+            return;
+        }
+
         this.gaussianBlur(e.offsetX, e.offsetY);
     };
 
@@ -72,7 +84,9 @@ export class Paint {
         this.clear();
         this.imgId = Date.now();
         this.canvas.removeEventListener("mousemove", this.mouseListener);
+        this.canvas.removeEventListener("touchmove", this.mouseListener);
         this.ctx.drawImage(image, 0, 0, this.canvas.width, this.canvas.height);
         this.canvas.addEventListener("mousemove", this.mouseListener);
+        this.canvas.addEventListener("touchmove", this.mouseListener);
     };
 }
