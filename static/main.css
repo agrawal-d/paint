@@ -18,3 +18,7 @@ canvas {
     display: block;
     cursor: crosshair;
 }
+
+input {
+    vertical-align: middle;
+}

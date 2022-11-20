@@ -1,3 +1,5 @@
+import { InputType } from "zlib";
+
 type WorkerToBrowserEvent = {
     data: {
         x: number;
@@ -6,7 +8,7 @@ type WorkerToBrowserEvent = {
         imgId: number;
     };
 };
-const BLUR_SIZE = 100;
+let BLUR_SIZE = 100;
 const myWorker = new Worker("./dist/worker.js");
 
 function sleep(ms: number) {
@@ -36,6 +38,11 @@ export class Paint {
 
         document.addEventListener("mousedown", () => (this.clicked = true));
         document.addEventListener("mouseup", () => (this.clicked = false));
+        document.getElementById("download")?.addEventListener("click", this.download);
+        (document.getElementById("blur_size") as HTMLInputElement).addEventListener("input", (e) => {
+            // @ts-ignore: Element exists
+            BLUR_SIZE = e.target.value;
+        });
 
         myWorker.onmessage = (e: WorkerToBrowserEvent) => {
             this.locked = false;
@@ -57,7 +64,7 @@ export class Paint {
     gaussianBlur = (x: number, y: number) => {
         this.locked = true;
         const input = this.ctx.getImageData(x - BLUR_SIZE / 2, y - BLUR_SIZE / 2, BLUR_SIZE, BLUR_SIZE).data;
-        myWorker.postMessage({ x: x - BLUR_SIZE / 2, y: y - BLUR_SIZE / 2, input, imgId: this.imgId });
+        myWorker.postMessage({ x: x - BLUR_SIZE / 2, y: y - BLUR_SIZE / 2, input, imgId: this.imgId, BLUR_SIZE });
     };
 
     mouseListener = async (e: MouseEvent | TouchEvent) => {
@@ -88,5 +95,12 @@ export class Paint {
         this.ctx.drawImage(image, 0, 0, this.canvas.width, this.canvas.height);
         this.canvas.addEventListener("mousemove", this.mouseListener);
         this.canvas.addEventListener("touchmove", this.mouseListener);
+    };
+
+    download = () => {
+        const link = document.createElement("a");
+        link.download = "blurred_image.png";
+        link.href = this.canvas.toDataURL();
+        link.click();
     };
 }

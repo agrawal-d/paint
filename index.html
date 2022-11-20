@@ -5,17 +5,23 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="stylesheet" href="./static/main.css" />
+        <link rel="shortcut icon" href="./static/favicon.png" type="image/x-icon" />
         <title>Paint</title>
     </head>
 
     <body>
-        <h1>Blur images using JavaScript</h1>
+        <h1>Blur images using Convolutions</h1>
         <input type="file" id="img" accept=".jpg,.png,.jpeg,.webm,.gif,.jfif" />
         <br />
         <div class="main">
             <canvas id="canvas1"></canvas>
         </div>
-        <p>Click and drag mouse pointer to blur.</p>
+        <p>
+            Blur Size <input type="range" min="10" max="150" value="50" step="10" id="blur_size" />
+            <br />
+            <button id="download">Download image</button>
+            Click and drag mouse pointer to blur.
+        </p>
         <script src="./dist/index.js" type="module"></script>
     </body>
 </html>

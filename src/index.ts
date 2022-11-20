@@ -5,6 +5,12 @@ const paint = new Paint(
     Math.min(800, window.innerWidth - 18, window.innerHeight - 200),
 );
 
+const initImg = new Image();
+initImg.src = "../static/ragdoll.webp";
+initImg.onload = (e) => {
+    paint.paintImage(initImg);
+};
+
 (document.getElementById("img") as HTMLInputElement).addEventListener("change", function (e) {
     if (this.files === null) {
         return;

@@ -7,7 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const BLUR_SIZE = 100;
+let BLUR_SIZE = 100;
 const myWorker = new Worker("./dist/worker.js");
 function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
@@ -17,6 +17,7 @@ function sleep(ms) {
  */
 export class Paint {
     constructor(canvas_id, w, h) {
+        var _a;
         this.locked = false;
         this.imgId = -1;
         this.clicked = false;
@@ -24,7 +25,7 @@ export class Paint {
         this.gaussianBlur = (x, y) => {
             this.locked = true;
             const input = this.ctx.getImageData(x - BLUR_SIZE / 2, y - BLUR_SIZE / 2, BLUR_SIZE, BLUR_SIZE).data;
-            myWorker.postMessage({ x: x - BLUR_SIZE / 2, y: y - BLUR_SIZE / 2, input, imgId: this.imgId });
+            myWorker.postMessage({ x: x - BLUR_SIZE / 2, y: y - BLUR_SIZE / 2, input, imgId: this.imgId, BLUR_SIZE });
         };
         this.mouseListener = (e) => __awaiter(this, void 0, void 0, function* () {
             if (this.locked) {
@@ -51,6 +52,12 @@ export class Paint {
             this.canvas.addEventListener("mousemove", this.mouseListener);
             this.canvas.addEventListener("touchmove", this.mouseListener);
         };
+        this.download = () => {
+            const link = document.createElement("a");
+            link.download = "blurred_image.png";
+            link.href = this.canvas.toDataURL();
+            link.click();
+        };
         const canvas = document.getElementById(canvas_id);
         if (canvas === null) {
             throw new Error(`Canvas element with id ${canvas_id} not found.`);
@@ -61,6 +68,11 @@ export class Paint {
         this.ctx = this.canvas.getContext("2d");
         document.addEventListener("mousedown", () => (this.clicked = true));
         document.addEventListener("mouseup", () => (this.clicked = false));
+        (_a = document.getElementById("download")) === null || _a === void 0 ? void 0 : _a.addEventListener("click", this.download);
+        document.getElementById("blur_size").addEventListener("input", (e) => {
+            // @ts-ignore: Element exists
+            BLUR_SIZE = e.target.value;
+        });
         myWorker.onmessage = (e) => {
             this.locked = false;
             const data = e.data;

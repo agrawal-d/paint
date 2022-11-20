@@ -9,8 +9,7 @@ let gaussian_kernel = Object.freeze([
 ]);
 // gaussian_kernel = [...Array(10)].map((_) => `Array(10).fill(1 / 100));
 const KERNEL_SIZE = gaussian_kernel.length;
-const BLUR_SIZE = 100;
-function gaussianBlur(x, y, input, imgId) {
+function gaussianBlur(x, y, input, imgId, BLUR_SIZE) {
     const output = Uint8ClampedArray.from(input);
     // Layer is R, G, B, or A [0 to 3]
     function getIndex(x, y, layer) {
@@ -36,6 +35,6 @@ function gaussianBlur(x, y, input, imgId) {
     return { x, y, img: new ImageData(output, BLUR_SIZE, BLUR_SIZE), imgId };
 }
 onmessage = (e) => {
-    postMessage(gaussianBlur(e.data.x, e.data.y, e.data.input, e.data.imgId));
+    postMessage(gaussianBlur(e.data.x, e.data.y, e.data.input, e.data.imgId, e.data.BLUR_SIZE));
 };
 //# sourceMappingURL=worker.js.map
